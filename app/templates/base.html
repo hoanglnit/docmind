@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DocMind{% block title %}{% endblock %}</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<nav class="topnav">
+  <a href="/" class="brand">
+    <span class="brand-icon">◈</span>
+    <span class="brand-text">DocMind</span>
+  </a>
+  <div class="nav-links">
+    <a href="/" class="nav-link {% if page == 'chat' %}active{% endif %}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Chat
+    </a>
+    <a href="/documents" class="nav-link {% if page == 'documents' %}active{% endif %}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Tài liệu
+    </a>
+    <a href="/scenarios" class="nav-link {% if page == 'scenarios' %}active{% endif %}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Kịch bản
+    </a>
+  </div>
+  <div class="nav-right">
+    <div class="health-badge" id="health-badge" title="Trạng thái hệ thống">
+      <span class="health-dot"></span>
+      <span class="health-label">Ollama</span>
+    </div>
+  </div>
+</nav>
+
+<div class="page-body">
+  {% block content %}{% endblock %}
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="/static/app.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

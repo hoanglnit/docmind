@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %} — Kịch bản{% endblock %}
+{% block content %}
+<div class="content-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Kịch bản</h1>
+      <p class="page-sub">Tạo và chỉnh sửa system prompt cho từng ngữ cảnh hỏi đáp</p>
+    </div>
+    <button class="btn-primary" id="btn-new-scenario">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Tạo kịch bản
+    </button>
+  </div>
+
+  <div class="scenario-layout">
+    <div class="scenario-list" id="scenario-list">
+      <div class="empty-state">Chưa có kịch bản nào</div>
+    </div>
+
+    <div class="scenario-editor" id="scenario-editor" style="display:none;">
+      <div class="editor-header">
+        <input type="text" id="sc-name" class="editor-name-input" placeholder="Tên kịch bản">
+        <div class="editor-actions">
+          <button class="btn-ghost btn-sm" id="btn-cancel-scenario">Hủy</button>
+          <button class="btn-primary btn-sm" id="btn-save-scenario">Lưu</button>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin:16px 0 12px;">
+        <label class="form-label">Mô tả</label>
+        <input type="text" id="sc-desc" class="form-input" placeholder="Mô tả ngắn về kịch bản này">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Giọng điệu</label>
+          <select id="sc-tone" class="form-select">
+            <option value="professional">Professional</option>
+            <option value="academic">Academic</option>
+            <option value="casual">Casual</option>
+            <option value="concise">Concise</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ngôn ngữ ưu tiên</label>
+          <select id="sc-lang" class="form-select">
+            <option value="vi">Tiếng Việt</option>
+            <option value="en">English</option>
+            <option value="auto">Tự động</option>
+          </select>
+        </div>
+        <div class="form-group" style="flex:0.5;display:flex;align-items:flex-end;padding-bottom:2px;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="sc-default">
+            <span>Mặc định</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">System Prompt <span class="form-hint">Hỗ trợ Jinja2: <code>{% raw %}{{ documents }}{% endraw %}</code></span></label>
+        <textarea id="sc-prompt" class="form-textarea" rows="16" placeholder="Nhập system prompt..."></textarea>
+      </div>
+
+      <input type="hidden" id="sc-id">
+    </div>
+  </div>
+</div>
+{% endblock %}

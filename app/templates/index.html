@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %} — Chat{% endblock %}
+{% block content %}
+<div class="chat-layout">
+
+  <!-- Sessions sidebar -->
+  <aside class="sessions-sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-title">Phiên chat</span>
+      <button class="btn-icon" id="btn-new-session" title="Tạo phiên mới">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+    <div class="session-list" id="session-list">
+      <div class="empty-state-small">Chưa có phiên nào</div>
+    </div>
+  </aside>
+
+  <!-- Main chat area -->
+  <main class="chat-main">
+    <div class="chat-empty" id="chat-empty">
+      <div class="empty-icon">◈</div>
+      <h2>DocMind</h2>
+      <p>Tạo một phiên chat mới, chọn tài liệu và bắt đầu hỏi đáp với AI.</p>
+      <button class="btn-primary" id="btn-new-session-center">Tạo phiên mới</button>
+    </div>
+
+    <div class="chat-active" id="chat-active" style="display:none;">
+      <div class="chat-header" id="chat-header">
+        <div class="chat-header-info">
+          <div class="chat-session-name" id="chat-session-name">—</div>
+          <div class="chat-session-meta" id="chat-session-meta"></div>
+        </div>
+        <div class="chat-header-actions">
+          <button class="btn-ghost btn-sm" id="btn-manage-docs" title="Quản lý tài liệu">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Tài liệu
+          </button>
+          <button class="btn-ghost btn-sm btn-danger" id="btn-delete-session" title="Xóa phiên">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="messages-area" id="messages-area"></div>
+
+      <div class="input-area">
+        <div class="input-wrap">
+          <textarea
+            id="msg-input"
+            class="msg-textarea"
+            placeholder="Hỏi về tài liệu của bạn..."
+            rows="1"
+          ></textarea>
+          <button class="btn-send" id="btn-send" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <div class="input-hint">Enter để gửi · Shift+Enter để xuống dòng</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- New Session Modal -->
+<div class="modal-overlay" id="modal-new-session">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Tạo phiên chat mới</h3>
+      <button class="btn-icon modal-close" data-modal="modal-new-session">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Tên phiên</label>
+        <input type="text" id="ns-name" class="form-input" placeholder="Ví dụ: Phân tích báo cáo Q4" value="Phiên mới">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Kịch bản (system prompt)</label>
+        <select id="ns-scenario" class="form-select">
+          <option value="">— Không dùng kịch bản —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tài liệu</label>
+        <div class="doc-checklist" id="ns-docs"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Top-K chunks</label>
+          <input type="number" id="ns-topk" class="form-input" value="5" min="1" max="20">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Temperature</label>
+          <input type="number" id="ns-temp" class="form-input" value="0.7" min="0" max="2" step="0.1">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" data-modal="modal-new-session">Hủy</button>
+      <button class="btn-primary" id="btn-create-session">Tạo phiên</button>
+    </div>
+  </div>
+</div>
+
+<!-- Manage Docs Modal -->
+<div class="modal-overlay" id="modal-manage-docs">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Quản lý tài liệu trong phiên</h3>
+      <button class="btn-icon modal-close" data-modal="modal-manage-docs">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="doc-checklist" id="md-docs"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" data-modal="modal-manage-docs">Hủy</button>
+      <button class="btn-primary" id="btn-save-docs">Lưu</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
