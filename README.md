@@ -278,7 +278,7 @@ ollama serve
 
 ```bash
 # Clone repo
-git clone https://github.com/hoanglnit/docmind ~/docmind
+git clone https://github.com/<your-username>/docmind ~/docmind
 cd ~/docmind
 
 # Tạo môi trường ảo
